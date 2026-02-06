@@ -25,7 +25,8 @@
         text-align: center;
         padding: 20px;
         position: relative;
-        z-index: 2;
+        width: 100%;
+        max-width: 360px;
     }
 
     img.cat {
@@ -38,13 +39,12 @@
         line-height: 1.4;
     }
 
-    .buttons {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        margin-top: 25px;
+    /* BUTTON ZONE */
+    .button-zone {
         position: relative;
-        z-index: 3;
+        width: 100%;
+        height: 140px;
+        margin-top: 25px;
     }
 
     button {
@@ -53,18 +53,24 @@
         border: none;
         border-radius: 30px;
         cursor: pointer;
-        transition: transform 0.1s ease;
+        position: absolute;
+        transition: transform 0.15s ease;
     }
 
     #yesBtn {
         background: #ff4d88;
         color: white;
+        left: 50%;
+        transform: translateX(-120px);
+        bottom: 0;
     }
 
     #noBtn {
         background: #ccc;
         color: #333;
-        position: fixed; /* IMPORTANT */
+        left: 50%;
+        transform: translateX(20px);
+        bottom: 0;
     }
 
     /* LOADING */
@@ -98,7 +104,6 @@
     .final {
         display: none;
         text-align: center;
-        z-index: 2;
     }
 
     .final img {
@@ -116,7 +121,7 @@
         bottom: -20px;
         font-size: 24px;
         animation: floatUp 4s linear infinite;
-        z-index: 1;
+        pointer-events: none;
     }
 
     @keyframes floatUp {
@@ -127,7 +132,7 @@
 </head>
 <body>
 
-<!-- QUESTION -->
+<!-- MAIN -->
 <div class="container" id="main">
     <img src="cat.png" class="cat">
     <h2>
@@ -135,12 +140,11 @@
         main hi aapke liye best choice hoon? 😌
     </h2>
 
-    <div class="buttons">
+    <div class="button-zone" id="zone">
         <button id="yesBtn">Yes 💖</button>
+        <button id="noBtn">No 🙃</button>
     </div>
 </div>
-
-<button id="noBtn">No 🙃</button>
 
 <!-- LOADING -->
 <div class="loading" id="loading">
@@ -162,45 +166,46 @@
 <script>
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
+    const zone = document.getElementById("zone");
     const main = document.getElementById("main");
     const loading = document.getElementById("loading");
     const final = document.getElementById("final");
     const finalText = document.getElementById("finalText");
     const music = document.getElementById("bgMusic");
 
-    // INITIAL NO BUTTON POSITION
-    moveNoButton();
-
     function moveNoButton() {
-        const padding = 80;
-        const maxX = window.innerWidth - noBtn.offsetWidth - padding;
-        const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+        const zoneRect = zone.getBoundingClientRect();
+        const btnRect = noBtn.getBoundingClientRect();
+
+        const maxX = zoneRect.width - btnRect.width;
+        const maxY = zoneRect.height - btnRect.height;
 
         const x = Math.random() * maxX;
         const y = Math.random() * maxY;
 
         noBtn.style.left = x + "px";
+        noBtn.style.bottom = "auto";
         noBtn.style.top = y + "px";
     }
 
-    // Desktop: almost click = escape
+    // Only escape on intent to click
     noBtn.addEventListener("mouseenter", moveNoButton);
-
-    // Mobile: touch attempt = escape
     noBtn.addEventListener("touchstart", moveNoButton);
 
     yesBtn.addEventListener("click", () => {
-        noBtn.style.display = "none";
+        // PRIME audio in same user gesture
+        music.volume = 0.8;
+        music.play().catch(() => {});
+
         main.style.display = "none";
         loading.style.display = "block";
 
         setTimeout(() => {
             loading.style.display = "none";
             final.style.display = "block";
-            music.play();
             startHearts();
             typeText("Mujhe pata hi tha…\nmain hi wo hoon 💘🎉");
-        }, 2200);
+        }, 2000);
     });
 
     function typeText(text) {
