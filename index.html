@@ -23,6 +23,7 @@
 
     .container {
         text-align: center;
+        padding: 20px;
     }
 
     img.cat {
@@ -32,12 +33,15 @@
 
     h2 {
         color: #444;
-        margin-bottom: 30px;
+        line-height: 1.4;
     }
 
+    /* BUTTONS */
     .buttons {
-        position: relative;
-        height: 120px;
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 25px;
     }
 
     button {
@@ -46,7 +50,7 @@
         border: none;
         border-radius: 30px;
         cursor: pointer;
-        transition: 0.2s;
+        transition: all 0.15s ease;
     }
 
     #yesBtn {
@@ -55,14 +59,38 @@
     }
 
     #noBtn {
-        position: absolute;
         background: #ccc;
         color: #333;
-        left: 140px;
-        top: 0;
     }
 
-    /* Final Screen */
+    /* LOADING SCREEN */
+    .loading {
+        display: none;
+        text-align: center;
+    }
+
+    .bar {
+        width: 220px;
+        height: 10px;
+        background: #eee;
+        border-radius: 20px;
+        overflow: hidden;
+        margin: 20px auto;
+    }
+
+    .bar span {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: #ff4d88;
+        animation: load 2s forwards;
+    }
+
+    @keyframes load {
+        to { width: 100%; }
+    }
+
+    /* FINAL */
     .final {
         display: none;
         text-align: center;
@@ -70,9 +98,14 @@
 
     .final img {
         width: 260px;
+        margin-bottom: 15px;
     }
 
-    /* Hearts */
+    .final h2 {
+        min-height: 60px;
+    }
+
+    /* HEARTS */
     .heart {
         position: absolute;
         bottom: -20px;
@@ -88,9 +121,13 @@
 </head>
 <body>
 
+<!-- QUESTION -->
 <div class="container" id="main">
-    <img src="cat.png" class="cat" alt="cute cat">
-    <h2>aap Jaanti ho na…<br>main hi aapke liye best choice hoon? 😌</h2>
+    <img src="cat.png" class="cat">
+    <h2>
+        aap Jaanti ho na…<br>
+        main hi aapke liye best choice hoon? 😌
+    </h2>
 
     <div class="buttons">
         <button id="yesBtn">Yes 💖</button>
@@ -98,34 +135,57 @@
     </div>
 </div>
 
+<!-- LOADING -->
+<div class="loading" id="loading">
+    <h2>Answer verify ho raha hai… 🤔</h2>
+    <div class="bar"><span></span></div>
+</div>
+
+<!-- FINAL -->
 <div class="final" id="final">
-    <img src="meme.gif" alt="meme">
+    <img src="meme.gif">
+    <h2 id="finalText"></h2>
 </div>
 
 <script>
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
     const main = document.getElementById("main");
+    const loading = document.getElementById("loading");
     const final = document.getElementById("final");
+    const finalText = document.getElementById("finalText");
+
+    let direction = 1;
 
     function moveNoButton() {
-        const x = Math.random() * (window.innerWidth - 120);
-        const y = Math.random() * (window.innerHeight - 120);
-        noBtn.style.left = x + "px";
-        noBtn.style.top = y + "px";
+        direction *= -1;
+        noBtn.style.transform = `translateX(${direction * 60}px)`;
     }
 
-    // Desktop
     noBtn.addEventListener("mouseenter", moveNoButton);
-
-    // Mobile
     noBtn.addEventListener("touchstart", moveNoButton);
 
     yesBtn.addEventListener("click", () => {
         main.style.display = "none";
-        final.style.display = "block";
-        startHearts();
+        loading.style.display = "block";
+
+        setTimeout(() => {
+            loading.style.display = "none";
+            final.style.display = "block";
+            startHearts();
+            typeText("Mujhe pehle se hi pata tha…\nmain hi wo hoon 💘😉");
+        }, 2200);
     });
+
+    function typeText(text) {
+        let i = 0;
+        finalText.innerHTML = "";
+        const interval = setInterval(() => {
+            finalText.innerHTML += text[i] === "\n" ? "<br>" : text[i];
+            i++;
+            if (i >= text.length) clearInterval(interval);
+        }, 60);
+    }
 
     function startHearts() {
         setInterval(() => {
@@ -135,9 +195,8 @@
             heart.style.left = Math.random() * 100 + "vw";
             heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
             document.body.appendChild(heart);
-
             setTimeout(() => heart.remove(), 5000);
-        }, 300);
+        }, 350);
     }
 </script>
 
