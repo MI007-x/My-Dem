@@ -10,7 +10,7 @@
 
 body{
 margin:0;
-height:100vh;
+min-height:100vh;
 background:linear-gradient(135deg,#ffd6e8,#fff0f6);
 display:flex;
 justify-content:center;
@@ -20,7 +20,7 @@ transition:background .8s ease;
 }
 
 body.dark{
-background:#0c0c0c;
+background:#0d0d0d;
 color:white;
 }
 
@@ -28,13 +28,34 @@ color:white;
 text-align:center;
 padding:20px;
 width:100%;
-max-width:420px;
+max-width:430px;
+position:relative;
 }
 
-/* ---------------- FIRST SCREEN ---------------- */
+h2{
+line-height:1.5;
+}
 
+/* Fullscreen Button */
+#fsBtn{
+position:fixed;
+top:12px;
+right:12px;
+z-index:9999;
+background:#ff4d88;
+color:white;
+border:none;
+border-radius:20px;
+padding:6px 14px;
+font-size:13px;
+cursor:pointer;
+opacity:.8;
+}
+#fsBtn:hover{opacity:1}
+
+/* First Screen */
 img.cat{
-width:180px;
+width:170px;
 margin-bottom:20px;
 }
 
@@ -71,11 +92,8 @@ transform:translateX(20px);
 bottom:0;
 }
 
-/* ---------------- LOADING ---------------- */
-
-.loading{
-display:none;
-}
+/* Loading */
+.loading{display:none}
 
 .bar{
 width:230px;
@@ -85,7 +103,6 @@ border-radius:20px;
 overflow:hidden;
 margin:20px auto;
 }
-
 .bar span{
 display:block;
 height:100%;
@@ -93,26 +110,22 @@ width:0%;
 background:#ff4d88;
 animation:load 2s forwards;
 }
+@keyframes load{to{width:100%}}
 
-@keyframes load{
-to{width:100%}
-}
-
-/* ---------------- STORY ---------------- */
-
+/* Story */
 .story-wrapper{
 display:none;
-perspective:1800px;
+perspective:2000px;
 width:100%;
-max-width:420px;
+max-width:430px;
 }
 
 .story-page{
 position:relative;
 width:100%;
-min-height:460px;
+min-height:480px;
 transform-style:preserve-3d;
-transition:transform 1.2s cubic-bezier(.25,.8,.25,1);
+transition:transform 1.3s cubic-bezier(.4,.2,.2,1);
 }
 
 .story-page.flipping{
@@ -127,14 +140,10 @@ left:0;
 backface-visibility:hidden;
 }
 
-.story-back{
-transform:rotateY(180deg);
-}
-
 .story-img-container{
 width:100%;
 height:340px;
-display:flex;
+display:none;
 justify-content:center;
 align-items:center;
 background:#111;
@@ -150,9 +159,9 @@ object-fit:contain;
 
 .story-text{
 margin-top:20px;
-min-height:90px;
+min-height:100px;
 padding:0 10px;
-line-height:1.5;
+line-height:1.6;
 }
 
 .shadow{
@@ -163,52 +172,56 @@ width:50%;
 height:100%;
 background:linear-gradient(to left,rgba(0,0,0,.5),transparent);
 opacity:0;
-transition:opacity 1.2s;
+transition:opacity 1.3s;
 }
 
-.story-page.flipping .shadow{
-opacity:1;
-}
+.story-page.flipping .shadow{opacity:1}
 
-/* rewind animation */
-
+/* Rewind */
 .rewind{
 animation:rewindAnim 1s linear infinite;
 }
-
 @keyframes rewindAnim{
 0%{transform:translateX(0)}
 50%{transform:translateX(-10px)}
 100%{transform:translateX(0)}
 }
 
-/* floating hearts */
-
-.heart{
+/* Hearts */
+.heart1,.heart2{
 position:absolute;
 bottom:-20px;
-animation:floatUp 4s linear infinite;
 pointer-events:none;
+animation:floatUp 5s linear infinite;
+}
+
+.heart2{
+animation-duration:7s;
+opacity:.7;
 }
 
 @keyframes floatUp{
-0%{transform:translateY(0);opacity:1}
-100%{transform:translateY(-100vh);opacity:0}
+0%{transform:translateY(0) scale(1);opacity:1}
+100%{transform:translateY(-100vh) scale(1.4);opacity:0}
+}
+
+/* Final scroll safe */
+.final-scroll{
+overflow-y:auto;
+max-height:75vh;
+padding-bottom:40px;
 }
 
 /* Responsive */
-
 @media(max-width:480px){
-.story-img-container{
-height:260px;
-}
-.story-page{
-min-height:420px;
-}
+.story-img-container{height:260px}
+.story-page{min-height:430px}
 }
 </style>
 </head>
 <body>
+
+<button id="fsBtn">Fullscreen</button>
 
 <!-- FIRST SCREEN -->
 <div class="container" id="main">
@@ -218,7 +231,6 @@ Neheart…<br>
 tum jaanti ho na…<br>
 main hi tumhare liye best hoon? 😌
 </h2>
-
 <div class="button-zone" id="zone">
 <button id="yesBtn">Yes 💖</button>
 <button id="noBtn">No 🙃</button>
@@ -235,15 +247,13 @@ main hi tumhare liye best hoon? 😌
 <div class="container story-wrapper" id="storyWrapper">
 <div class="story-page" id="storyPage">
 
-<div class="story-face story-front">
+<div class="story-face">
 <div class="story-img-container">
 <img id="storyImg" class="story-img">
 </div>
 <h2 id="storyText" class="story-text"></h2>
 <div class="shadow"></div>
 </div>
-
-<div class="story-face story-back"></div>
 
 </div>
 </div>
@@ -258,65 +268,63 @@ const storyWrapper=document.getElementById("storyWrapper");
 const storyPage=document.getElementById("storyPage");
 const storyImg=document.getElementById("storyImg");
 const storyText=document.getElementById("storyText");
+const imgContainer=document.querySelector(".story-img-container");
+const fsBtn=document.getElementById("fsBtn");
 
 let escapeCount=0;
 
-/* NO BUTTON ESCAPE */
+/* Fullscreen */
+fsBtn.onclick=()=>{
+if(!document.fullscreenElement){
+document.documentElement.requestFullscreen();
+}else{
+document.exitFullscreen();
+}
+};
+
+/* No escape */
 function moveNoButton(){
 const zoneRect=zone.getBoundingClientRect();
 const btnRect=noBtn.getBoundingClientRect();
-
 const maxX=zoneRect.width-btnRect.width;
 const maxY=zoneRect.height-btnRect.height;
-
-const x=Math.random()*maxX;
-const y=Math.random()*maxY;
-
-noBtn.style.left=x+"px";
+noBtn.style.left=Math.random()*maxX+"px";
 noBtn.style.bottom="auto";
-noBtn.style.top=y+"px";
-
+noBtn.style.top=Math.random()*maxY+"px";
 escapeCount++;
 noBtn.innerText=escapeCount<5?"No 😱":"Thak gaya hu 😵‍💫";
-
-setTimeout(()=>{
-noBtn.innerText="No 🙃";
-},700);
+setTimeout(()=>noBtn.innerText="No 🙃",700);
 }
-
 noBtn.addEventListener("mouseenter",moveNoButton);
 noBtn.addEventListener("touchstart",moveNoButton);
 
-/* YES FLOW */
-yesBtn.addEventListener("click",()=>{
+/* Yes Flow */
+yesBtn.onclick=()=>{
 main.style.display="none";
 loading.style.display="block";
-
 setTimeout(()=>{
 loading.style.display="none";
 document.body.classList.add("dark");
 startRewind();
 },2200);
-});
+};
 
-/* REWIND */
+/* Rewind */
 function startRewind(){
 storyWrapper.style.display="block";
+imgContainer.style.display="none";
 storyText.innerHTML="Neheart… yaad he jab ham pehli baar mile the 💭";
-storyImg.style.display="none";
-
 setTimeout(()=>{
 storyText.innerHTML="⏪ Rewind karte he…";
 storyText.classList.add("rewind");
 },2000);
-
 setTimeout(()=>{
 storyText.classList.remove("rewind");
 startStory();
 },4000);
 }
 
-/* STORY DATA */
+/* Pages */
 const pages=[
 {img:"story1.gif",text:"Yaad he ham kese randomly mile"},
 {img:"story2.gif",text:"aur tum bar bar mujse keh rahe the ki tum chale jaoge , chale jaoge .."},
@@ -333,68 +341,73 @@ const pages=[
 
 let index=0;
 
-/* STORY ENGINE */
-
-function startStory(){
-showPage();
-}
+function startStory(){showPage();}
 
 function showPage(){
-if(index>=pages.length){
-showFinal();
-return;
-}
+if(index>=pages.length){showFinal();return;}
 
 const img=new Image();
 img.src=pages[index].img;
 
 img.onload=function(){
-
+imgContainer.style.display="flex";
 storyImg.src=pages[index].img;
-storyImg.style.display="block";
-storyText.innerHTML=pages[index].text;
-
-/* dynamic reading time */
-let readTime=5000 + (pages[index].text.length * 60);
 
 setTimeout(()=>{
-flipPage();
-},readTime);
-
+storyText.innerHTML=pages[index].text;
+let readTime=6500+(pages[index].text.length*70);
+setTimeout(()=>flipPage(),readTime);
+},400);
 };
 }
 
 function flipPage(){
 storyPage.classList.add("flipping");
-
 setTimeout(()=>{
 storyPage.classList.remove("flipping");
 index++;
 showPage();
-},1200);
+},1300);
 }
 
 function showFinal(){
-storyImg.style.display="none";
+imgContainer.style.display="none";
+storyText.classList.add("final-scroll");
+
+setTimeout(()=>{
 storyText.innerHTML=
 "Neheart… 💖<br><br>" +
-"Tum sirf sundar nahi ho… tum samajdaar ho, stubborn ho, emotional ho, aur kabhi kabhi bohot zyada dramatic bhi 😌<br><br>" +
-"Lekin jo tum ho na… wo bilkul original piece ho. Tumhari hasi, tumhara gussa, tumhara paragraph mode, sab kuch ekdum special hai.<br><br>" +
-"3 saal me bahut kuch badla hoga, lekin ek cheez nahi badli — tumhara importance. Aur honestly, agar phir se rewind mile na… to main fir se tumhe hi choose karunga 💘";
+"Pata nahi kaise likhu… par jo bhi ho na, tum mere life ka ek bohot hi special part ho. Tumhari hasi alag hai, tumhara gussa bhi alag hai… aur tumhara paragraph mode to legend level ka hai 😌<br><br>" +
+"3 saal ho gaye… par abhi bhi jab tum bina bataye gussa hoti ho na, tab bhi mujhe lagta hai ki ye meri hi responsibility hai tumhe manaana.<br><br>" +
+"Sach bolu to… agar time wapas mile na, to main fir se wahi random milna choose karunga… fir se wahi ladna, fir se wahi gaane sunna, fir se wahi sab kuch 💘<br><br>" +
+"Aur haan… tum sundar ho. Bahut sundar. Bas kabhi kabhi yaad dilaana padta hai 😉";
 
 startHearts();
+
+},1000);
 }
 
+/* Continuous Hearts */
 function startHearts(){
 setInterval(()=>{
-const heart=document.createElement("div");
-heart.className="heart";
-heart.innerText="💖";
-heart.style.left=Math.random()*100+"vw";
-heart.style.animationDuration=(Math.random()*2+3)+"s";
-document.body.appendChild(heart);
-setTimeout(()=>heart.remove(),5000);
-},400);
+let h=document.createElement("div");
+h.className="heart1";
+h.innerText="💖";
+h.style.left=Math.random()*100+"vw";
+h.style.fontSize=(20+Math.random()*20)+"px";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),6000);
+},500);
+
+setInterval(()=>{
+let h2=document.createElement("div");
+h2.className="heart2";
+h2.innerText="✨";
+h2.style.left=Math.random()*100+"vw";
+h2.style.fontSize=(15+Math.random()*15)+"px";
+document.body.appendChild(h2);
+setTimeout(()=>h2.remove(),7000);
+},900);
 }
 </script>
 
