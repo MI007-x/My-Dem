@@ -6,229 +6,216 @@
 <title>Just One Question 💖</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-        font-family: 'Segoe UI', sans-serif;
-    }
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{
+margin:0;height:100vh;
+background:linear-gradient(135deg,#ffd6e8,#fff0f6);
+display:flex;justify-content:center;align-items:center;
+overflow:hidden;
+}
+.container{
+text-align:center;padding:20px;
+width:100%;max-width:380px;position:relative;
+}
+img.cat{width:180px;margin-bottom:20px;animation:floatCat 3s ease-in-out infinite}
+@keyframes floatCat{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-6px)}
+}
+h2{color:#444;line-height:1.4}
 
-    body {
-        margin: 0;
-        height: 100vh;
-        background: linear-gradient(135deg, #ffd6e8, #fff0f6);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-    }
+.button-zone{
+position:relative;width:100%;height:150px;margin-top:25px;
+}
 
-    .container {
-        text-align: center;
-        padding: 20px;
-        position: relative;
-        width: 100%;
-        max-width: 360px;
-    }
+button{
+padding:12px 28px;font-size:18px;
+border:none;border-radius:30px;
+cursor:pointer;position:absolute;
+transition:all .2s ease;
+}
 
-    img.cat {
-        width: 180px;
-        margin-bottom: 20px;
-    }
+#yesBtn{
+background:#ff4d88;color:white;
+left:50%;transform:translateX(-130px);
+bottom:0;
+animation:pulse 1.5s infinite;
+}
+@keyframes pulse{
+0%{box-shadow:0 0 0 0 rgba(255,77,136,.4)}
+70%{box-shadow:0 0 0 15px rgba(255,77,136,0)}
+100%{box-shadow:0 0 0 0 rgba(255,77,136,0)}
+}
 
-    h2 {
-        color: #444;
-        line-height: 1.4;
-    }
+#noBtn{
+background:#ccc;color:#333;
+left:50%;transform:translateX(20px);
+bottom:0;
+}
 
-    /* BUTTON ZONE */
-    .button-zone {
-        position: relative;
-        width: 100%;
-        height: 140px;
-        margin-top: 25px;
-    }
+.loading,.final{display:none;text-align:center}
 
-    button {
-        padding: 12px 28px;
-        font-size: 18px;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        position: absolute;
-        transition: transform 0.15s ease;
-    }
+.bar{
+width:230px;height:10px;background:#eee;
+border-radius:20px;overflow:hidden;margin:20px auto;
+}
+.bar span{
+display:block;height:100%;width:0%;
+background:#ff4d88;
+animation:load 2.2s forwards;
+}
+@keyframes load{to{width:100%}}
 
-    #yesBtn {
-        background: #ff4d88;
-        color: white;
-        left: 50%;
-        transform: translateX(-120px);
-        bottom: 0;
-    }
+.final img{
+width:260px;margin-bottom:15px;
+animation:fadeIn .8s ease forwards;
+opacity:0;
+}
+@keyframes fadeIn{to{opacity:1}}
 
-    #noBtn {
-        background: #ccc;
-        color: #333;
-        left: 50%;
-        transform: translateX(20px);
-        bottom: 0;
-    }
+.heart,.confetti{
+position:absolute;bottom:-20px;font-size:22px;
+animation:floatUp 4s linear infinite;
+pointer-events:none;
+}
+@keyframes floatUp{
+0%{transform:translateY(0);opacity:1}
+100%{transform:translateY(-100vh);opacity:0}
+}
 
-    /* LOADING */
-    .loading {
-        display: none;
-        text-align: center;
-    }
-
-    .bar {
-        width: 220px;
-        height: 10px;
-        background: #eee;
-        border-radius: 20px;
-        overflow: hidden;
-        margin: 20px auto;
-    }
-
-    .bar span {
-        display: block;
-        height: 100%;
-        width: 0%;
-        background: #ff4d88;
-        animation: load 2s forwards;
-    }
-
-    @keyframes load {
-        to { width: 100%; }
-    }
-
-    /* FINAL */
-    .final {
-        display: none;
-        text-align: center;
-    }
-
-    .final img {
-        width: 260px;
-        margin-bottom: 15px;
-    }
-
-    .final h2 {
-        min-height: 60px;
-    }
-
-    /* HEARTS */
-    .heart {
-        position: absolute;
-        bottom: -20px;
-        font-size: 24px;
-        animation: floatUp 4s linear infinite;
-        pointer-events: none;
-    }
-
-    @keyframes floatUp {
-        0% { transform: translateY(0); opacity: 1; }
-        100% { transform: translateY(-100vh); opacity: 0; }
-    }
 </style>
 </head>
 <body>
 
-<!-- MAIN -->
 <div class="container" id="main">
-    <img src="cat.png" class="cat">
-    <h2>
-        aap Jaanti ho na…<br>
-        main hi aapke liye best choice hoon? 😌
-    </h2>
+<img src="cat.png" class="cat">
+<h2>
+aap Jaanti ho na…<br>
+main hi aapke liye best choice hoon? 😌
+</h2>
 
-    <div class="button-zone" id="zone">
-        <button id="yesBtn">Yes 💖</button>
-        <button id="noBtn">No 🙃</button>
-    </div>
+<div class="button-zone" id="zone">
+<button id="yesBtn">Yes 💖</button>
+<button id="noBtn">No 🙃</button>
+</div>
 </div>
 
-<!-- LOADING -->
 <div class="loading" id="loading">
-    <h2>Answer verify ho raha hai… 🤔</h2>
-    <div class="bar"><span></span></div>
+<h2 id="loadingText">Answer verify ho raha hai… 🤔</h2>
+<div class="bar"><span></span></div>
 </div>
 
-<!-- FINAL -->
 <div class="final" id="final">
-    <img src="meme.gif">
-    <h2 id="finalText"></h2>
+<img src="meme.gif">
+<h2 id="finalText"></h2>
 </div>
 
-<!-- MUSIC -->
 <audio id="bgMusic" preload="auto">
-    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_9b7b6a2c6c.mp3" type="audio/mpeg">
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_9b7b6a2c6c.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const zone = document.getElementById("zone");
-    const main = document.getElementById("main");
-    const loading = document.getElementById("loading");
-    const final = document.getElementById("final");
-    const finalText = document.getElementById("finalText");
-    const music = document.getElementById("bgMusic");
+const noBtn=document.getElementById("noBtn");
+const yesBtn=document.getElementById("yesBtn");
+const zone=document.getElementById("zone");
+const main=document.getElementById("main");
+const loading=document.getElementById("loading");
+const final=document.getElementById("final");
+const finalText=document.getElementById("finalText");
+const loadingText=document.getElementById("loadingText");
+const music=document.getElementById("bgMusic");
 
-    function moveNoButton() {
-        const zoneRect = zone.getBoundingClientRect();
-        const btnRect = noBtn.getBoundingClientRect();
+let escapeSpeed=1;
 
-        const maxX = zoneRect.width - btnRect.width;
-        const maxY = zoneRect.height - btnRect.height;
+function moveNoButton(){
+const zoneRect=zone.getBoundingClientRect();
+const btnRect=noBtn.getBoundingClientRect();
 
-        const x = Math.random() * maxX;
-        const y = Math.random() * maxY;
+const maxX=zoneRect.width-btnRect.width;
+const maxY=zoneRect.height-btnRect.height;
 
-        noBtn.style.left = x + "px";
-        noBtn.style.bottom = "auto";
-        noBtn.style.top = y + "px";
-    }
+const x=Math.random()*maxX;
+const y=Math.random()*maxY;
 
-    // Only escape on intent to click
-    noBtn.addEventListener("mouseenter", moveNoButton);
-    noBtn.addEventListener("touchstart", moveNoButton);
+noBtn.style.left=x+"px";
+noBtn.style.bottom="auto";
+noBtn.style.top=y+"px";
 
-    yesBtn.addEventListener("click", () => {
-        // PRIME audio in same user gesture
-        music.volume = 0.8;
-        music.play().catch(() => {});
+escapeSpeed+=0.3;
+noBtn.innerText="No 😱";
+setTimeout(()=>noBtn.innerText="No 🙃",600);
 
-        main.style.display = "none";
-        loading.style.display = "block";
+const taunts=["Arey ruk 😅","Pakad ke dikha 😉","No chance 😜","Itna easy nahi 😏"];
+noBtn.title=taunts[Math.floor(Math.random()*taunts.length)];
 
-        setTimeout(() => {
-            loading.style.display = "none";
-            final.style.display = "block";
-            startHearts();
-            typeText("Mujhe pata hi tha…\nmain hi wo hoon 💘🎉");
-        }, 2000);
-    });
+if(navigator.vibrate) navigator.vibrate(30);
+}
 
-    function typeText(text) {
-        let i = 0;
-        finalText.innerHTML = "";
-        const interval = setInterval(() => {
-            finalText.innerHTML += text[i] === "\n" ? "<br>" : text[i];
-            i++;
-            if (i >= text.length) clearInterval(interval);
-        }, 60);
-    }
+noBtn.addEventListener("mouseenter",moveNoButton);
+noBtn.addEventListener("touchstart",moveNoButton);
 
-    function startHearts() {
-        setInterval(() => {
-            const heart = document.createElement("div");
-            heart.className = "heart";
-            heart.innerText = "💖";
-            heart.style.left = Math.random() * 100 + "vw";
-            heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
-        }, 350);
-    }
+yesBtn.addEventListener("click",()=>{
+music.volume=0.9;
+music.play().catch(()=>{});
+
+main.style.display="none";
+loading.style.display="block";
+
+let loadingMessages=[
+"Answer verify ho raha hai… 🤔",
+"Compatibility check ho raha hai… 💞",
+"Result calculate ho raha hai… 💌"
+];
+
+let i=0;
+let interval=setInterval(()=>{
+loadingText.innerText=loadingMessages[i%loadingMessages.length];
+i++;
+},700);
+
+setTimeout(()=>{
+clearInterval(interval);
+loading.style.display="none";
+final.style.display="block";
+startHearts();
+burstConfetti();
+typeText("Mujhe pata hi tha…\nmain hi wo hoon 💘🎉");
+},2300);
+});
+
+function typeText(text){
+let i=0;
+finalText.innerHTML="";
+const interval=setInterval(()=>{
+finalText.innerHTML+=text[i]==="\n"?"<br>":text[i];
+i++;
+if(i>=text.length)clearInterval(interval);
+},55);
+}
+
+function startHearts(){
+setInterval(()=>{
+const heart=document.createElement("div");
+heart.className="heart";
+heart.innerText="💖";
+heart.style.left=Math.random()*100+"vw";
+heart.style.animationDuration=(Math.random()*2+3)+"s";
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),5000);
+},400);
+}
+
+function burstConfetti(){
+for(let i=0;i<20;i++){
+const conf=document.createElement("div");
+conf.className="confetti";
+conf.innerText=["🎉","✨","💘"][Math.floor(Math.random()*3)];
+conf.style.left=Math.random()*100+"vw";
+conf.style.animationDuration=(Math.random()*2+2)+"s";
+document.body.appendChild(conf);
+setTimeout(()=>conf.remove(),4000);
+}
+}
 </script>
 
 </body>
