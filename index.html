@@ -32,11 +32,9 @@ max-width:430px;
 position:relative;
 }
 
-h2{
-line-height:1.5;
-}
+h2{line-height:1.6}
 
-/* Fullscreen Button */
+/* Fullscreen */
 #fsBtn{
 position:fixed;
 top:12px;
@@ -49,15 +47,11 @@ border-radius:20px;
 padding:6px 14px;
 font-size:13px;
 cursor:pointer;
-opacity:.8;
+opacity:.85;
 }
-#fsBtn:hover{opacity:1}
 
-/* First Screen */
-img.cat{
-width:170px;
-margin-bottom:20px;
-}
+/* First screen */
+img.cat{width:170px;margin-bottom:20px}
 
 .button-zone{
 position:relative;
@@ -67,46 +61,40 @@ margin-top:25px;
 }
 
 button{
-padding:12px 28px;
-font-size:18px;
+padding:12px 26px;
+font-size:16px;
 border:none;
 border-radius:30px;
 cursor:pointer;
-position:absolute;
-transition:all .2s ease;
+transition:.2s ease;
 }
 
 #yesBtn{
-background:#ff4d88;
-color:white;
+position:absolute;
 left:50%;
 transform:translateX(-130px);
 bottom:0;
+background:#ff4d88;
+color:white;
 }
 
 #noBtn{
-background:#ccc;
-color:#333;
+position:absolute;
 left:50%;
 transform:translateX(20px);
 bottom:0;
+background:#ccc;
+color:#333;
 }
 
 /* Loading */
 .loading{display:none}
-
 .bar{
-width:230px;
-height:10px;
-background:#eee;
-border-radius:20px;
-overflow:hidden;
-margin:20px auto;
+width:230px;height:10px;background:#eee;
+border-radius:20px;overflow:hidden;margin:20px auto;
 }
 .bar span{
-display:block;
-height:100%;
-width:0%;
+display:block;height:100%;width:0%;
 background:#ff4d88;
 animation:load 2s forwards;
 }
@@ -128,17 +116,7 @@ transform-style:preserve-3d;
 transition:transform 1.3s cubic-bezier(.4,.2,.2,1);
 }
 
-.story-page.flipping{
-transform:rotateY(-180deg);
-}
-
-.story-face{
-position:absolute;
-width:100%;
-top:0;
-left:0;
-backface-visibility:hidden;
-}
+.story-page.flipping{transform:rotateY(-180deg)}
 
 .story-img-container{
 width:100%;
@@ -164,20 +142,6 @@ padding:0 10px;
 line-height:1.6;
 }
 
-.shadow{
-position:absolute;
-top:0;
-right:0;
-width:50%;
-height:100%;
-background:linear-gradient(to left,rgba(0,0,0,.5),transparent);
-opacity:0;
-transition:opacity 1.3s;
-}
-
-.story-page.flipping .shadow{opacity:1}
-
-/* Rewind */
 .rewind{
 animation:rewindAnim 1s linear infinite;
 }
@@ -188,34 +152,36 @@ animation:rewindAnim 1s linear infinite;
 }
 
 /* Hearts */
-.heart1,.heart2{
+.heart{
 position:absolute;
 bottom:-20px;
 pointer-events:none;
-animation:floatUp 5s linear infinite;
+animation:floatUp 6s linear infinite;
 }
-
-.heart2{
-animation-duration:7s;
-opacity:.7;
-}
-
 @keyframes floatUp{
 0%{transform:translateY(0) scale(1);opacity:1}
 100%{transform:translateY(-100vh) scale(1.4);opacity:0}
 }
 
-/* Final scroll safe */
-.final-scroll{
-overflow-y:auto;
-max-height:75vh;
-padding-bottom:40px;
+/* Back button */
+#backBtn{
+margin-top:25px;
+background:#ff4d88;
+color:white;
+border:none;
+border-radius:25px;
+padding:10px 22px;
+cursor:pointer;
+display:none;
 }
 
-/* Responsive */
+/* Final second screen */
+#ultimateScreen{
+display:none;
+}
+
 @media(max-width:480px){
 .story-img-container{height:260px}
-.story-page{min-height:430px}
 }
 </style>
 </head>
@@ -247,15 +213,25 @@ main hi tumhare liye best hoon? 😌
 <div class="container story-wrapper" id="storyWrapper">
 <div class="story-page" id="storyPage">
 
-<div class="story-face">
 <div class="story-img-container">
 <img id="storyImg" class="story-img">
 </div>
+
 <h2 id="storyText" class="story-text"></h2>
-<div class="shadow"></div>
-</div>
+
+<button id="backBtn">Back 💖</button>
 
 </div>
+</div>
+
+<!-- ULTIMATE SCREEN -->
+<div class="container" id="ultimateScreen">
+<h2>
+Mujhe pehle se hi pata tha… 😌💘<br><br>
+Main hi tumhare liye best hoon.
+</h2>
+<br>
+<h3>Ab aap bahar jaake Mihir se baat kar sakte he 😉</h3>
 </div>
 
 <script>
@@ -269,6 +245,8 @@ const storyPage=document.getElementById("storyPage");
 const storyImg=document.getElementById("storyImg");
 const storyText=document.getElementById("storyText");
 const imgContainer=document.querySelector(".story-img-container");
+const backBtn=document.getElementById("backBtn");
+const ultimateScreen=document.getElementById("ultimateScreen");
 const fsBtn=document.getElementById("fsBtn");
 
 let escapeCount=0;
@@ -289,16 +267,15 @@ const btnRect=noBtn.getBoundingClientRect();
 const maxX=zoneRect.width-btnRect.width;
 const maxY=zoneRect.height-btnRect.height;
 noBtn.style.left=Math.random()*maxX+"px";
-noBtn.style.bottom="auto";
 noBtn.style.top=Math.random()*maxY+"px";
 escapeCount++;
-noBtn.innerText=escapeCount<5?"No 😱":"Thak gaya hu 😵‍💫";
+noBtn.innerText=escapeCount<5?"No 😱":"Thak gaya 😵";
 setTimeout(()=>noBtn.innerText="No 🙃",700);
 }
 noBtn.addEventListener("mouseenter",moveNoButton);
 noBtn.addEventListener("touchstart",moveNoButton);
 
-/* Yes Flow */
+/* Yes */
 yesBtn.onclick=()=>{
 main.style.display="none";
 loading.style.display="block";
@@ -309,7 +286,6 @@ startRewind();
 },2200);
 };
 
-/* Rewind */
 function startRewind(){
 storyWrapper.style.display="block";
 imgContainer.style.display="none";
@@ -324,7 +300,6 @@ startStory();
 },4000);
 }
 
-/* Pages */
 const pages=[
 {img:"story1.gif",text:"Yaad he ham kese randomly mile"},
 {img:"story2.gif",text:"aur tum bar bar mujse keh rahe the ki tum chale jaoge , chale jaoge .."},
@@ -336,7 +311,7 @@ const pages=[
 {img:"story8.gif",text:"aur aaj bhi tumhara vahi ...."},
 {img:"story9.gif",text:"chhoti chhoti baato pe kit kit karna , mera vahi tumhe pura paragraph likhke samjaana..."},
 {img:"story10.gif",text:"tumhara bina bataye gussa ho jaana ... mera fir tumhe pura paragraph likhne samjaana.."},
-{img:"story11.gif",text:"lekin tum ho bohot 'sundar' (likh deta hu, kahi ye naa kahe ki sirf burae kari) 😏"}
+{img:"story11.gif",text:"lekin tum ho bohot 'sundar' 😏"}
 ];
 
 let index=0;
@@ -345,14 +320,11 @@ function startStory(){showPage();}
 
 function showPage(){
 if(index>=pages.length){showFinal();return;}
-
 const img=new Image();
 img.src=pages[index].img;
-
 img.onload=function(){
 imgContainer.style.display="flex";
 storyImg.src=pages[index].img;
-
 setTimeout(()=>{
 storyText.innerHTML=pages[index].text;
 let readTime=6500+(pages[index].text.length*70);
@@ -372,42 +344,30 @@ showPage();
 
 function showFinal(){
 imgContainer.style.display="none";
-storyText.classList.add("final-scroll");
-
-setTimeout(()=>{
 storyText.innerHTML=
 "Neheart… 💖<br><br>" +
-"Pata nahi kaise likhu… par jo bhi ho na, tum mere life ka ek bohot hi important and special part ho. Tumhari hasi alag hai, tumhara gussa bhi alag hai… aur tumhara kalesh to legend level ka hai 😌<br><br>" +
-"3 saal ho gaye… par abhi bhi jab tum bina bataye gussa hoti ho na, tab bhi mujhe lagta hai ki ye meri hi responsibility hai tumhe manaana.<br><br>" +
-"Sach bolu to… agar muje time time me wapas jaana mile, to main fir se wahi random milna choose karunga… Tum jesi ho perfect ho, jesi dikhti ho perfect ho, jese bat karte ho vo perfect he  💘<br><br>" +
-"Aur haan… tum sundar ho. Bahut sundar. bas jataata nahi, kahi udne naa lago 😉";
+"Sach bolu to… tum meri life ka ek bohot hi important and special hissa ho. Tumhari hasi, tumhara gussa, tumhara vo legendary kalesh mode… sab alag level ka hai.<br><br>" +
+"and Agar muje firse moka mile to me fir se vahi moments vapas se live karna chahunga… 💘";
 
+backBtn.style.display="inline-block";
 startHearts();
-
-},1000);
 }
 
-/* Continuous Hearts */
+backBtn.onclick=()=>{
+storyWrapper.style.display="none";
+ultimateScreen.style.display="block";
+};
+
 function startHearts(){
 setInterval(()=>{
 let h=document.createElement("div");
-h.className="heart1";
+h.className="heart";
 h.innerText="💖";
 h.style.left=Math.random()*100+"vw";
-h.style.fontSize=(20+Math.random()*20)+"px";
+h.style.fontSize=(18+Math.random()*18)+"px";
 document.body.appendChild(h);
-setTimeout(()=>h.remove(),6000);
+setTimeout(()=>h.remove(),7000);
 },500);
-
-setInterval(()=>{
-let h2=document.createElement("div");
-h2.className="heart2";
-h2.innerText="✨";
-h2.style.left=Math.random()*100+"vw";
-h2.style.fontSize=(15+Math.random()*15)+"px";
-document.body.appendChild(h2);
-setTimeout(()=>h2.remove(),7000);
-},900);
 }
 </script>
 
