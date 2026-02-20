@@ -34,7 +34,6 @@ position:relative;
 
 h2{line-height:1.6}
 
-/* Fullscreen */
 #fsBtn{
 position:fixed;
 top:12px;
@@ -50,7 +49,6 @@ cursor:pointer;
 opacity:.85;
 }
 
-/* First screen */
 img.cat{width:170px;margin-bottom:20px}
 
 .button-zone{
@@ -102,20 +100,9 @@ animation:load 2s forwards;
 /* Story */
 .story-wrapper{
 display:none;
-perspective:2000px;
 width:100%;
 max-width:430px;
 }
-
-.story-page{
-position:relative;
-width:100%;
-min-height:480px;
-transform-style:preserve-3d;
-transition:transform 1.3s cubic-bezier(.4,.2,.2,1);
-}
-
-.story-page.flipping{transform:rotateY(-180deg)}
 
 .story-img-container{
 width:100%;
@@ -150,6 +137,13 @@ animation:rewindAnim 1s linear infinite;
 100%{transform:translateX(0)}
 }
 
+/* Scroll enabled for final */
+.final-scroll{
+overflow-y:auto;
+max-height:75vh;
+padding-bottom:30px;
+}
+
 /* Hearts */
 .heart{
 position:absolute;
@@ -162,7 +156,6 @@ animation:floatUp 6s linear infinite;
 100%{transform:translateY(-100vh) scale(1.4);opacity:0}
 }
 
-/* Back button */
 #backBtn{
 margin-top:25px;
 background:#ff4d88;
@@ -210,21 +203,16 @@ main hi tumhare liye best hoon? 😌
 
 <!-- STORY -->
 <div class="container story-wrapper" id="storyWrapper">
-<div class="story-page" id="storyPage">
-
 <div class="story-img-container">
 <img id="storyImg" class="story-img">
 </div>
-
 <h2 id="storyText" class="story-text"></h2>
-
 <button id="backBtn">Back 💖</button>
-
-</div>
 </div>
 
 <!-- ULTIMATE SCREEN -->
 <div class="container" id="ultimateScreen">
+<img src="cat.png" class="cat">
 <h2>
 aur haan… mujhe to pehle se hi pata tha 😌💘<br><br>
 main hi tumhare liye best hoon. 😁🥰
@@ -240,7 +228,6 @@ const zone=document.getElementById("zone");
 const main=document.getElementById("main");
 const loading=document.getElementById("loading");
 const storyWrapper=document.getElementById("storyWrapper");
-const storyPage=document.getElementById("storyPage");
 const storyImg=document.getElementById("storyImg");
 const storyText=document.getElementById("storyText");
 const imgContainer=document.querySelector(".story-img-container");
@@ -250,7 +237,6 @@ const fsBtn=document.getElementById("fsBtn");
 
 let escapeCount=0;
 
-/* Fullscreen */
 fsBtn.onclick=()=>{
 if(!document.fullscreenElement){
 document.documentElement.requestFullscreen();
@@ -259,7 +245,6 @@ document.exitFullscreen();
 }
 };
 
-/* No escape */
 function moveNoButton(){
 const zoneRect=zone.getBoundingClientRect();
 const btnRect=noBtn.getBoundingClientRect();
@@ -274,7 +259,6 @@ setTimeout(()=>noBtn.innerText="No 🙃",700);
 noBtn.addEventListener("mouseenter",moveNoButton);
 noBtn.addEventListener("touchstart",moveNoButton);
 
-/* Yes */
 yesBtn.onclick=()=>{
 main.style.display="none";
 loading.style.display="block";
@@ -299,7 +283,6 @@ startStory();
 },4000);
 }
 
-/* EXACT ORIGINAL TEXTS */
 const pages=[
 {img:"story1.gif",text:"Yaad he ham kese randomly mile"},
 {img:"story2.gif",text:"aur tum bar bar mujse keh rahe the ki tum chale jaoge , chale jaoge .."},
@@ -328,22 +311,17 @@ storyImg.src=pages[index].img;
 setTimeout(()=>{
 storyText.innerHTML=pages[index].text;
 let readTime=7000+(pages[index].text.length*80);
-setTimeout(()=>flipPage(),readTime);
+setTimeout(()=>{
+index++;
+showPage();
+},readTime);
 },400);
 };
 }
 
-function flipPage(){
-storyPage.classList.add("flipping");
-setTimeout(()=>{
-storyPage.classList.remove("flipping");
-index++;
-showPage();
-},1300);
-}
-
 function showFinal(){
 imgContainer.style.display="none";
+storyText.classList.add("final-scroll");
 storyText.innerHTML=
 "Neheart… 💖<br><br>" +
 "Sach bolu to… tum meri life ka ek bohot hi important and special hissa ho. Tumhari hasi alag hai, tumhara gussa alag hai, aur tumhara kalesh mode to ekdum legendary hai 😌<br><br>" +
