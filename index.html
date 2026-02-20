@@ -7,25 +7,40 @@
 
 <style>
 *{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+
 body{
 margin:0;height:100vh;
 background:linear-gradient(135deg,#ffd6e8,#fff0f6);
 display:flex;justify-content:center;align-items:center;
 overflow:hidden;
+transition:background .6s ease, filter .6s ease;
 }
+
+body.dark{
+background:#111;
+color:white;
+}
+
 .container{
 text-align:center;padding:20px;
 width:100%;max-width:380px;position:relative;
 }
-img.cat{width:180px;margin-bottom:20px;animation:floatCat 3s ease-in-out infinite}
+
+img.cat{
+width:180px;margin-bottom:20px;
+animation:floatCat 3s ease-in-out infinite;
+}
+
 @keyframes floatCat{
 0%,100%{transform:translateY(0)}
 50%{transform:translateY(-6px)}
 }
-h2{color:#444;line-height:1.4}
+
+h2{line-height:1.4;color:#444}
+body.dark h2{color:#fff}
 
 .button-zone{
-position:relative;width:100%;height:150px;margin-top:25px;
+position:relative;width:100%;height:160px;margin-top:25px;
 }
 
 button{
@@ -41,6 +56,7 @@ left:50%;transform:translateX(-130px);
 bottom:0;
 animation:pulse 1.5s infinite;
 }
+
 @keyframes pulse{
 0%{box-shadow:0 0 0 0 rgba(255,77,136,.4)}
 70%{box-shadow:0 0 0 15px rgba(255,77,136,0)}
@@ -53,7 +69,7 @@ left:50%;transform:translateX(20px);
 bottom:0;
 }
 
-.loading,.final{display:none;text-align:center}
+.loading,.memory,.final{display:none;text-align:center}
 
 .bar{
 width:230px;height:10px;background:#eee;
@@ -78,11 +94,11 @@ position:absolute;bottom:-20px;font-size:22px;
 animation:floatUp 4s linear infinite;
 pointer-events:none;
 }
+
 @keyframes floatUp{
 0%{transform:translateY(0);opacity:1}
 100%{transform:translateY(-100vh);opacity:0}
 }
-
 </style>
 </head>
 <body>
@@ -90,7 +106,8 @@ pointer-events:none;
 <div class="container" id="main">
 <img src="cat.png" class="cat">
 <h2>
-aap Jaanti ho na…<br>
+Neheart…<br>
+tum jaanti ho na…<br>
 main hi aapke liye best choice hoon? 😌
 </h2>
 
@@ -103,6 +120,10 @@ main hi aapke liye best choice hoon? 😌
 <div class="loading" id="loading">
 <h2 id="loadingText">Answer verify ho raha hai… 🤔</h2>
 <div class="bar"><span></span></div>
+</div>
+
+<div class="memory" id="memory">
+<h2 id="memoryText"></h2>
 </div>
 
 <div class="final" id="final">
@@ -121,11 +142,13 @@ const zone=document.getElementById("zone");
 const main=document.getElementById("main");
 const loading=document.getElementById("loading");
 const final=document.getElementById("final");
+const memory=document.getElementById("memory");
 const finalText=document.getElementById("finalText");
+const memoryText=document.getElementById("memoryText");
 const loadingText=document.getElementById("loadingText");
 const music=document.getElementById("bgMusic");
 
-let escapeSpeed=1;
+let escapeCount=0;
 
 function moveNoButton(){
 const zoneRect=zone.getBoundingClientRect();
@@ -141,14 +164,22 @@ noBtn.style.left=x+"px";
 noBtn.style.bottom="auto";
 noBtn.style.top=y+"px";
 
-escapeSpeed+=0.3;
+escapeCount++;
+
+if(escapeCount<5){
 noBtn.innerText="No 😱";
-setTimeout(()=>noBtn.innerText="No 🙃",600);
+}
+else{
+noBtn.innerText="Thak gaya hu 😵‍💫";
+}
 
-const taunts=["Arey ruk 😅","Pakad ke dikha 😉","No chance 😜","Itna easy nahi 😏"];
-noBtn.title=taunts[Math.floor(Math.random()*taunts.length)];
-
-if(navigator.vibrate) navigator.vibrate(30);
+setTimeout(()=>{
+if(escapeCount<5){
+noBtn.innerText="No 🙃";
+}else{
+noBtn.innerText="Par fir bhi No 😤";
+}
+},700);
 }
 
 noBtn.addEventListener("mouseenter",moveNoButton);
@@ -161,29 +192,48 @@ music.play().catch(()=>{});
 main.style.display="none";
 loading.style.display="block";
 
-let loadingMessages=[
-"Answer verify ho raha hai… 🤔",
-"Compatibility check ho raha hai… 💞",
-"Result calculate ho raha hai… 💌"
-];
-
-let i=0;
-let interval=setInterval(()=>{
-loadingText.innerText=loadingMessages[i%loadingMessages.length];
-i++;
-},700);
+setTimeout(()=>{
+document.body.classList.add("dark");
+},1200);
 
 setTimeout(()=>{
-clearInterval(interval);
 loading.style.display="none";
+memory.style.display="block";
+typeMemory("Neheart… yaad hai pehli baar jab hum mile the? 😊");
+},2300);
+
+setTimeout(()=>{
+memory.style.display="none";
 final.style.display="block";
 startHearts();
 burstConfetti();
-typeText("Mujhe pata hi tha…\nmain hi wo hoon 💘🎉");
-},2300);
+showFinalLine();
+},4500);
 });
 
-function typeText(text){
+function typeMemory(text){
+let i=0;
+memoryText.innerHTML="";
+const interval=setInterval(()=>{
+memoryText.innerHTML+=text[i];
+i++;
+if(i>=text.length)clearInterval(interval);
+},50);
+}
+
+function showFinalLine(){
+const lines=[
+"Mujhe pata hi tha… main hi wo hoon 💘",
+"See? Destiny bhi agree karti hai 😉",
+"Universe ne bhi confirm kar diya 💞",
+"Tumne sahi choice ki 😌💖",
+"Duniya ki Khatarnak Baddie with Lovely Banda 🙆🏻‍♂️"
+];
+
+typeFinal(lines[Math.floor(Math.random()*lines.length)]);
+}
+
+function typeFinal(text){
 let i=0;
 finalText.innerHTML="";
 const interval=setInterval(()=>{
@@ -206,7 +256,7 @@ setTimeout(()=>heart.remove(),5000);
 }
 
 function burstConfetti(){
-for(let i=0;i<20;i++){
+for(let i=0;i<25;i++){
 const conf=document.createElement("div");
 conf.className="confetti";
 conf.innerText=["🎉","✨","💘"][Math.floor(Math.random()*3)];
