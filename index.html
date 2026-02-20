@@ -66,7 +66,6 @@ font-size:16px;
 border:none;
 border-radius:30px;
 cursor:pointer;
-transition:.2s ease;
 }
 
 #yesBtn{
@@ -175,7 +174,7 @@ cursor:pointer;
 display:none;
 }
 
-/* Final second screen */
+/* Ultimate Screen */
 #ultimateScreen{
 display:none;
 }
@@ -227,11 +226,11 @@ main hi tumhare liye best hoon? 😌
 <!-- ULTIMATE SCREEN -->
 <div class="container" id="ultimateScreen">
 <h2>
-Mujhe pehle se hi pata tha… 😌💘<br><br>
-Main hi tumhare liye best hoon.
+aur haan… mujhe to pehle se hi pata tha 😌💘<br><br>
+main hi tumhare liye best hoon. 😁🥰
 </h2>
 <br>
-<h3>Ab aap bahar jaake Mihir se baat kar sakte he 😉</h3>
+<h3>and ab aap bahar jaake Mihir se baat kar sakte he 😉</h3>
 </div>
 
 <script>
@@ -269,7 +268,7 @@ const maxY=zoneRect.height-btnRect.height;
 noBtn.style.left=Math.random()*maxX+"px";
 noBtn.style.top=Math.random()*maxY+"px";
 escapeCount++;
-noBtn.innerText=escapeCount<5?"No 😱":"Thak gaya 😵";
+noBtn.innerText=escapeCount<10?"No 😱":"Thak gaya 😵";
 setTimeout(()=>noBtn.innerText="No 🙃",700);
 }
 noBtn.addEventListener("mouseenter",moveNoButton);
@@ -300,6 +299,7 @@ startStory();
 },4000);
 }
 
+/* EXACT ORIGINAL TEXTS */
 const pages=[
 {img:"story1.gif",text:"Yaad he ham kese randomly mile"},
 {img:"story2.gif",text:"aur tum bar bar mujse keh rahe the ki tum chale jaoge , chale jaoge .."},
@@ -311,7 +311,7 @@ const pages=[
 {img:"story8.gif",text:"aur aaj bhi tumhara vahi ...."},
 {img:"story9.gif",text:"chhoti chhoti baato pe kit kit karna , mera vahi tumhe pura paragraph likhke samjaana..."},
 {img:"story10.gif",text:"tumhara bina bataye gussa ho jaana ... mera fir tumhe pura paragraph likhne samjaana.."},
-{img:"story11.gif",text:"lekin tum ho bohot 'sundar' 😏"}
+{img:"story11.gif",text:"lekin tum ho bohot 'sundar' (likh deta hu, kahi ye naa kahe ki sirf burae kari) 😏"}
 ];
 
 let index=0;
@@ -327,7 +327,7 @@ imgContainer.style.display="flex";
 storyImg.src=pages[index].img;
 setTimeout(()=>{
 storyText.innerHTML=pages[index].text;
-let readTime=6500+(pages[index].text.length*70);
+let readTime=7000+(pages[index].text.length*80);
 setTimeout(()=>flipPage(),readTime);
 },400);
 };
@@ -346,8 +346,10 @@ function showFinal(){
 imgContainer.style.display="none";
 storyText.innerHTML=
 "Neheart… 💖<br><br>" +
-"Sach bolu to… tum meri life ka ek bohot hi important and special hissa ho. Tumhari hasi, tumhara gussa, tumhara vo legendary kalesh mode… sab alag level ka hai.<br><br>" +
-"and Agar muje firse moka mile to me fir se vahi moments vapas se live karna chahunga… 💘";
+"Sach bolu to… tum meri life ka ek bohot hi important and special hissa ho. Tumhari hasi alag hai, tumhara gussa alag hai, aur tumhara kalesh mode to ekdum legendary hai 😌<br><br>" +
+"3 saal me kitni baar hum lade, zagde, manaya, samjaaya, lekin aek chiz constant rahi ki ham sath rahe.., sur kaarwan banta gaya 🎉.<br><br>" +
+"aur haa Tum sirf sundar nahi ho… tum bohot sundar ho. Aur sirf chehre se nahi — dil se bhi. Bas me kabhi jatata nahi taaki tum hawa me naa udne lago 😉<br><br>" +
+"Agar phir se rewind mile na… to main fir se wahi random milna choose karunga, fir se wahi gaane, fir se wahi ladai, aur fir se tum 💘";
 
 backBtn.style.display="inline-block";
 startHearts();
