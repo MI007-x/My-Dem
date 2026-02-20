@@ -9,82 +9,173 @@
 *{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
 
 body{
-margin:0;height:100vh;
+margin:0;
+height:100vh;
 background:linear-gradient(135deg,#ffd6e8,#fff0f6);
-display:flex;justify-content:center;align-items:center;
+display:flex;
+justify-content:center;
+align-items:center;
 overflow:hidden;
 transition:background .8s ease;
 }
 
 body.dark{
-background:#000;
+background:#0c0c0c;
 color:white;
 }
 
-.container{text-align:center;padding:20px;max-width:420px;width:100%}
+.container{
+text-align:center;
+padding:20px;
+width:100%;
+max-width:420px;
+}
 
-img.cat{width:180px;margin-bottom:20px}
+/* ---------------- FIRST SCREEN ---------------- */
 
-h2{line-height:1.4;color:#444}
-body.dark h2{color:#fff}
+img.cat{
+width:180px;
+margin-bottom:20px;
+}
 
 .button-zone{
-position:relative;width:100%;height:150px;margin-top:25px;
+position:relative;
+width:100%;
+height:150px;
+margin-top:25px;
 }
 
 button{
-padding:12px 28px;font-size:18px;
-border:none;border-radius:30px;
-cursor:pointer;position:absolute;
+padding:12px 28px;
+font-size:18px;
+border:none;
+border-radius:30px;
+cursor:pointer;
+position:absolute;
 transition:all .2s ease;
 }
 
 #yesBtn{
-background:#ff4d88;color:white;
-left:50%;transform:translateX(-130px);
+background:#ff4d88;
+color:white;
+left:50%;
+transform:translateX(-130px);
 bottom:0;
 }
 
 #noBtn{
-background:#ccc;color:#333;
-left:50%;transform:translateX(20px);
+background:#ccc;
+color:#333;
+left:50%;
+transform:translateX(20px);
 bottom:0;
 }
 
-/* loading */
-.loading{display:none;text-align:center}
+/* ---------------- LOADING ---------------- */
+
+.loading{
+display:none;
+}
 
 .bar{
-width:230px;height:10px;background:#eee;
-border-radius:20px;overflow:hidden;margin:20px auto;
+width:230px;
+height:10px;
+background:#eee;
+border-radius:20px;
+overflow:hidden;
+margin:20px auto;
 }
+
 .bar span{
-display:block;height:100%;width:0%;
+display:block;
+height:100%;
+width:0%;
 background:#ff4d88;
 animation:load 2s forwards;
 }
-@keyframes load{to{width:100%}}
 
-/* story */
-.story-wrapper{display:none;perspective:1000px}
-.story-page{
-transition:transform .8s ease, opacity .6s ease;
-transform-style:preserve-3d;
+@keyframes load{
+to{width:100%}
 }
-.story-page.flip{
-transform:rotateY(180deg);
-opacity:0;
-}
-.story-img{
+
+/* ---------------- STORY ---------------- */
+
+.story-wrapper{
+display:none;
+perspective:1800px;
 width:100%;
-border-radius:16px;
-margin-bottom:15px;
+max-width:420px;
+}
+
+.story-page{
+position:relative;
+width:100%;
+min-height:460px;
+transform-style:preserve-3d;
+transition:transform 1.2s cubic-bezier(.25,.8,.25,1);
+}
+
+.story-page.flipping{
+transform:rotateY(-180deg);
+}
+
+.story-face{
+position:absolute;
+width:100%;
+top:0;
+left:0;
+backface-visibility:hidden;
+}
+
+.story-back{
+transform:rotateY(180deg);
+}
+
+.story-img-container{
+width:100%;
+height:340px;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#111;
+border-radius:18px;
+overflow:hidden;
+}
+
+.story-img{
+max-width:100%;
+max-height:100%;
+object-fit:contain;
+}
+
+.story-text{
+margin-top:20px;
+min-height:90px;
+padding:0 10px;
+line-height:1.5;
+}
+
+.shadow{
+position:absolute;
+top:0;
+right:0;
+width:50%;
+height:100%;
+background:linear-gradient(to left,rgba(0,0,0,.5),transparent);
+opacity:0;
+transition:opacity 1.2s;
+}
+
+.story-page.flipping .shadow{
+opacity:1;
 }
 
 /* rewind animation */
+
 .rewind{
 animation:rewindAnim 1s linear infinite;
 }
+
 @keyframes rewindAnim{
 0%{transform:translateX(0)}
 50%{transform:translateX(-10px)}
@@ -92,23 +183,36 @@ animation:rewindAnim 1s linear infinite;
 }
 
 /* floating hearts */
+
 .heart{
 position:absolute;
 bottom:-20px;
 animation:floatUp 4s linear infinite;
 pointer-events:none;
 }
+
 @keyframes floatUp{
 0%{transform:translateY(0);opacity:1}
 100%{transform:translateY(-100vh);opacity:0}
+}
+
+/* Responsive */
+
+@media(max-width:480px){
+.story-img-container{
+height:260px;
+}
+.story-page{
+min-height:420px;
+}
 }
 </style>
 </head>
 <body>
 
-<!-- SCREEN 1 -->
+<!-- FIRST SCREEN -->
 <div class="container" id="main">
-<img src="cat.png">
+<img src="cat.png" class="cat">
 <h2>
 Neheart…<br>
 tum jaanti ho na…<br>
@@ -130,8 +234,17 @@ main hi tumhare liye best hoon? 😌
 <!-- STORY -->
 <div class="container story-wrapper" id="storyWrapper">
 <div class="story-page" id="storyPage">
+
+<div class="story-face story-front">
+<div class="story-img-container">
 <img id="storyImg" class="story-img">
-<h2 id="storyText"></h2>
+</div>
+<h2 id="storyText" class="story-text"></h2>
+<div class="shadow"></div>
+</div>
+
+<div class="story-face story-back"></div>
+
 </div>
 </div>
 
@@ -148,7 +261,7 @@ const storyText=document.getElementById("storyText");
 
 let escapeCount=0;
 
-// NO BUTTON ESCAPE
+/* NO BUTTON ESCAPE */
 function moveNoButton(){
 const zoneRect=zone.getBoundingClientRect();
 const btnRect=noBtn.getBoundingClientRect();
@@ -174,7 +287,7 @@ noBtn.innerText="No 🙃";
 noBtn.addEventListener("mouseenter",moveNoButton);
 noBtn.addEventListener("touchstart",moveNoButton);
 
-// YES FLOW
+/* YES FLOW */
 yesBtn.addEventListener("click",()=>{
 main.style.display="none";
 loading.style.display="block";
@@ -186,14 +299,14 @@ startRewind();
 },2200);
 });
 
-// REWIND INTRO
+/* REWIND */
 function startRewind(){
 storyWrapper.style.display="block";
-storyText.innerHTML="Neheart… yaad hai jab hum pehli baar mile the? 💭";
+storyText.innerHTML="Neheart… yaad he jab ham pehli baar mile the 💭";
 storyImg.style.display="none";
 
 setTimeout(()=>{
-storyText.innerHTML="⏪ Rewind karte hain…";
+storyText.innerHTML="⏪ Rewind karte he…";
 storyText.classList.add("rewind");
 },2000);
 
@@ -203,7 +316,7 @@ startStory();
 },4000);
 }
 
-// STORY DATA
+/* STORY DATA */
 const pages=[
 {img:"story1.gif",text:"Yaad he ham kese randomly mile"},
 {img:"story2.gif",text:"aur tum bar bar mujse keh rahe the ki tum chale jaoge , chale jaoge .."},
@@ -220,6 +333,8 @@ const pages=[
 
 let index=0;
 
+/* STORY ENGINE */
+
 function startStory(){
 showPage();
 }
@@ -230,31 +345,42 @@ showFinal();
 return;
 }
 
+const img=new Image();
+img.src=pages[index].img;
+
+img.onload=function(){
+
 storyImg.src=pages[index].img;
 storyImg.style.display="block";
 storyText.innerHTML=pages[index].text;
 
+/* dynamic reading time */
+let readTime=5000 + (pages[index].text.length * 60);
+
 setTimeout(()=>{
 flipPage();
-},5000);
+},readTime);
+
+};
 }
 
 function flipPage(){
-storyPage.classList.add("flip");
+storyPage.classList.add("flipping");
+
 setTimeout(()=>{
-storyPage.classList.remove("flip");
+storyPage.classList.remove("flipping");
 index++;
 showPage();
-},800);
+},1200);
 }
 
 function showFinal(){
 storyImg.style.display="none";
 storyText.innerHTML=
 "Neheart… 💖<br><br>" +
-"Tum sirf sundar nahi ho… tum samajdaar ho, emotional ho, dramatic ho aur kabhi kabhi thodi si ziddi bhi 😌<br><br>" +
-"Lekin jo tum ho na… wo bilkul original piece ho. 3 saal me bahut kuch badla hoga… lekin tumhari importance kabhi nahi badli.<br><br>" +
-"Agar phir se rewind mile… to main fir se tumhe hi choose karunga 💘";
+"Tum sirf sundar nahi ho… tum samajdaar ho, stubborn ho, emotional ho, aur kabhi kabhi bohot zyada dramatic bhi 😌<br><br>" +
+"Lekin jo tum ho na… wo bilkul original piece ho. Tumhari hasi, tumhara gussa, tumhara paragraph mode, sab kuch ekdum special hai.<br><br>" +
+"3 saal me bahut kuch badla hoga, lekin ek cheez nahi badli — tumhara importance. Aur honestly, agar phir se rewind mile na… to main fir se tumhe hi choose karunga 💘";
 
 startHearts();
 }
