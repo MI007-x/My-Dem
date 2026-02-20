@@ -332,7 +332,13 @@ storyText.innerHTML=
 "aur haa Tum sirf sundar nahi ho… tum bohot sundar ho. Aur sirf chehre se nahi — dil se bhi. Bas me kabhi jatata nahi taaki tum hawa me naa udne lago 😉<br><br>" +
 "Agar phir se rewind mile na… to main fir se wahi random milna choose karunga, fir se wahi gaane, fir se wahi ladai, aur fir se tum 💘";
 
+backBtn.style.display="none";
+
+storyText.onscroll = function(){
+if(storyText.scrollTop + storyText.clientHeight >= storyText.scrollHeight - 5){
 backBtn.style.display="inline-block";
+}
+};
 startHearts();
 }
 
