@@ -77,11 +77,15 @@ color:white;
 
 #noBtn{
 position:absolute;
+#noBtn{
+position:absolute;
 left:50%;
-transform:translateX(20px);
 bottom:0;
 background:#ccc;
 color:#333;
+transform:translateX(20px);
+width:auto;
+min-width:90px;
 }
 
 /* Loading */
@@ -212,7 +216,7 @@ main hi tumhare liye best hoon? 😌
 
 <!-- ULTIMATE SCREEN -->
 <div class="container" id="ultimateScreen">
-<img src="cat.png" class="cat">
+<img src="meme.gif" class="cat">
 <h2>
 aur haan… mujhe to pehle se hi pata tha 😌💘<br><br>
 main hi tumhare liye best hoon. 😁🥰
@@ -246,15 +250,22 @@ document.exitFullscreen();
 };
 
 function moveNoButton(){
-const zoneRect=zone.getBoundingClientRect();
-const btnRect=noBtn.getBoundingClientRect();
-const maxX=zoneRect.width-btnRect.width;
-const maxY=zoneRect.height-btnRect.height;
-noBtn.style.left=Math.random()*maxX+"px";
-noBtn.style.top=Math.random()*maxY+"px";
+const zoneRect = zone.getBoundingClientRect();
+const btnRect = noBtn.getBoundingClientRect();
+
+const maxX = zoneRect.width - btnRect.width;
+const maxY = zoneRect.height - btnRect.height;
+
+noBtn.style.transform = "none";   // 🔥 remove translate once moving
+noBtn.style.bottom = "auto";      // 🔥 remove bottom anchor
+
+noBtn.style.left = Math.random() * maxX + "px";
+noBtn.style.top  = Math.random() * maxY + "px";
+
 escapeCount++;
-noBtn.innerText=escapeCount<10?"No 😱":"Thak gaya 😵";
-setTimeout(()=>noBtn.innerText="No 🙃",700);
+noBtn.innerText = escapeCount < 10 ? "No 😱" : "Thak gaya 😵";
+
+setTimeout(()=> noBtn.innerText="No 🙃",700);
 }
 noBtn.addEventListener("mouseenter",moveNoButton);
 noBtn.addEventListener("touchstart",moveNoButton);
